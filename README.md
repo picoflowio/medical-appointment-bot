@@ -5,7 +5,7 @@ NestJS + Picoflow demo that acts like a clinic receptionist: collects symptoms, 
 ## Quick start
 ```sh
 npm install
-npm run start:dev   # http://localhost:8000, Swagger at /api
+npm run start:dev   # http://localhost:8000/ai/run, Swagger at /api
 ```
 
 ## Configure
