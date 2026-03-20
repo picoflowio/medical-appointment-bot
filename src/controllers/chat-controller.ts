@@ -17,9 +17,7 @@ import { ApiResponse, ApiBody, ApiTags, ApiHeader } from '@nestjs/swagger';
 import { K } from '@picoflow/core/utils/constants';
 import { CoreConfig } from '@picoflow/core';
 import { FlowEngine } from '@picoflow/core';
-
-import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
-import { ChatOpenAI } from '@langchain/openai';
+import { Model } from '@picoflow/core/models/model-registry';
 import {
   ApiEndResponseDto,
   ApiRunResponse400Dto,
@@ -34,15 +32,17 @@ import { MedicalFlow } from 'src/myflow/medical-flow/medical-flow';
 export class ChatController {
   constructor(private flowEngine: FlowEngine) {
     //register flows
-    flowEngine.registerFlows({ MedicalFlow });
+    void flowEngine.registerFlows({ MedicalFlow });
 
-    //register models
-    flowEngine.registerModel(ChatGoogleGenerativeAI, {
-      model: 'gemini-2.5-pro',
-      temperature: CoreConfig.llmTemperature,
-      apiKey: CoreConfig.GeminiKey,
-      maxRetries: CoreConfig.llmRetry,
-    });
+    //register a default model for this service (override defaults in v12)
+    flowEngine.registerModel(
+      new Model('gpt-4o', {
+        temperature: CoreConfig.llmTemperature,
+        apiKey: CoreConfig.OpenAIKey,
+        maxRetries: CoreConfig.llmRetry,
+      }),
+      true,
+    );
   }
   //.................................................................
   @HttpCode(HttpStatus.OK)
