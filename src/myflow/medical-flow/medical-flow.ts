@@ -8,7 +8,7 @@ export class MedicalFlow extends Flow {
   }
 
   protected defineSteps(): Step[] {
-    const model = 'gemini-2.5-pro';
+    const model = 'gpt-4o';
     return [
       new SymptomsStep(this, true).setTemperature(0.5).useModel(model),
       new BookingStep(this, false).useModel(model),

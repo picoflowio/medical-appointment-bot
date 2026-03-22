@@ -37,10 +37,10 @@ export class ChatController {
     flowEngine.registerFlows({ MedicalFlow });
 
     //register models
-    flowEngine.registerModel(ChatGoogleGenerativeAI, {
-      model: 'gemini-2.5-pro',
+    flowEngine.registerModel(ChatOpenAI, {
+      model: 'gpt-4o',
       temperature: CoreConfig.llmTemperature,
-      apiKey: CoreConfig.GeminiKey,
+      apiKey: CoreConfig.OpenAIKey,
       maxRetries: CoreConfig.llmRetry,
     });
   }
