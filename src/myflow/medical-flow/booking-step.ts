@@ -1,5 +1,11 @@
 import { ToolCall } from '@langchain/core/messages/tool';
-import { Flow, Step, EndStep, ToolResponseType, ToolType } from '@picoflow/core';
+import {
+  Flow,
+  Step,
+  EndStep,
+  ToolResponseType,
+  ToolType,
+} from '@picoflow/core';
 import { z } from 'zod';
 
 export class BookingStep extends Step {
@@ -9,7 +15,8 @@ export class BookingStep extends Step {
 
   public getPrompt(): string {
     const doctors = this.getState('doctors');
-    const symptoms = this.getState('symptoms');
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+    const symptoms = String(this.getState('symptoms') ?? '');
     return `You have the user's symptoms: ${symptoms}. Here are the available doctors: ${JSON.stringify(doctors)}. Help the user pick a doctor and an available time slot. Once they decide, use the 'book_appointment' tool.`;
   }
 
@@ -17,7 +24,8 @@ export class BookingStep extends Step {
     return [
       {
         name: 'book_appointment',
-        description: 'Book an appointment with the selected doctor at the chosen time.',
+        description:
+          'Book an appointment with the selected doctor at the chosen time.',
         schema: z.object({
           doctorName: z.string().describe('Name of the selected doctor'),
           timeSlot: z.string().describe('The chosen time slot'),
@@ -25,14 +33,14 @@ export class BookingStep extends Step {
       },
     ];
   }
-  
+
   public getTool(): string[] {
     return ['book_appointment', 'end_chat'];
   }
 
-  protected async book_appointment(tool: ToolCall): Promise<ToolResponseType> {
+  protected book_appointment(tool: ToolCall): ToolResponseType {
     const { doctorName, timeSlot } = tool.args;
-    
+
     // In a real scenario, we'd save this to a DB.
     this.saveState({ doctorName, timeSlot, booked: true });
 
@@ -42,7 +50,7 @@ export class BookingStep extends Step {
     };
   }
 
-  protected async end_chat(_tool: ToolCall): Promise<ToolResponseType> {
+  protected end_chat(_tool: ToolCall): ToolResponseType {
     return EndStep;
   }
 }

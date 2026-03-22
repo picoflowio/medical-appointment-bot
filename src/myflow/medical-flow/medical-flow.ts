@@ -5,14 +5,17 @@ import { BookingStep } from './booking-step';
 export class MedicalFlow extends Flow {
   public constructor() {
     super(MedicalFlow);
+    // set default model for the flow (required by @picoflow/core v12)
+    this.useModel('gpt-4o');
   }
 
   protected defineSteps(): Step[] {
-    const model = 'gpt-4o';
     return [
-      new SymptomsStep(this, true).setTemperature(0.5).useModel(model),
-      new BookingStep(this, false).useModel(model),
-      new EndStep(this).useMemory('end').useModel(model),
+      new SymptomsStep(this, true).useModelParams<'gpt-4o'>({
+        temperature: 0.5,
+      }),
+      new BookingStep(this, false),
+      new EndStep(this).useMemory('end'),
     ];
   }
 }
