@@ -6,6 +6,7 @@
 import {
   Body,
   Controller,
+  Get,
   Headers,
   HttpCode,
   HttpStatus,
@@ -100,4 +101,13 @@ export class ChatController {
     res.send(result);
   }
   //.................................................................
+  @Get('flows')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'List of registered flow names',
+    schema: { type: 'array', items: { type: 'string', example: 'BasicFlow' } },
+  })
+  getFlows() {
+    return this.flowEngine.getFlowNames();
+  }
 }
